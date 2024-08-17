@@ -1,0 +1,288 @@
+
+﻿@{
+    int pageCount = ViewBag.PageCount != null ? (int)ViewBag.PageCount : 1;
+
+    int startPage = 1;
+    int endPage = pageCount;
+}
+
+
+@model IEnumerable<SanPham>
+
+<h1 class="mb-3 fs-6 fw-bold">
+    <i class="fa-solid fa-house"></i>
+    Trang chủ @ViewBag.PageCount
+</h1>
+<div class="sort-product">
+    <label for="">Lọc danh sách:</label>
+
+    <ul class="sort-product_list">
+        <li class="sort-product_item">
+            <span>
+                Thương hiệu
+                <i class="fa-solid fa-angle-down"></i>
+            </span>
+            <div class="product-dropdown h-auto">
+                @await Component.InvokeAsync("Brand")
+            </div>
+        </li>
+
+
+        <li class="sort-product_item">
+            <span>
+                Giá
+                <i class="fa-solid fa-angle-down"></i>
+            </span>
+            <div class="product-dropdown h-auto">
+                <ul class="product-dropdown_list list-unstyled d-flex flex-wrap">
+                    <li>
+                        <button value="0-1" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">Dưới 1 triệu</button>
+                    </li>
+                    <li>
+                        <button value="1-4" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">1-4 triệu</button>
+                    </li>
+                    <li>
+                        <button value="4-8" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">4-8 triệu</button>
+                    </li>
+                    <li>
+                        <button value="8-12" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">8-12 triệu</button>
+                    </li>
+                    <li>
+                        <button value="12-16" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">12-16 triệu</button>
+                    </li>
+                    <li>
+                        <button value="16-20" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">16-20 triệu</button>
+                    </li>
+
+                    <li>
+                        <button value="20-100" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">20-100 triệu</button>
+                    </li>
+
+                    <li>
+                        <button value="100-" class="product-dropdown-price product-dropdown_btn bg-transparent border-0">Trên 100 triệu</button>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <li class="sort-product_item">
+            <span class="product-dropdown-discount">Khuyến mại</span>
+        </li>
+
+        <li class="sort-product_item">
+            <span>
+                Sắp xếp
+                <i class="fa-solid fa-angle-down"></i>
+            </span>
+            <div class="product-dropdown h-auto" style="min-width: 154px">
+                <ul class="product-dropdown_list list-unstyled">
+                    <li>
+                        <button id="sort_default" class="product-dropdown-sort product-dropdown_btn bg-transparent border-0">Mặc định</button>
+                    </li>
+                    <li>
+                        <button class="product-dropdown-sort product-dropdown_btn bg-transparent border-0">Sản phẩm mới</button>
+                    </li>
+                    <li>
+                        <button id="" class="product-dropdown-sort product-dropdown_btn bg-transparent border-0">Sản phẩm cũ</button>
+                    </li>
+                    <li>
+                        <button id="price_desc" class="product-dropdown-sort product-dropdown_btn bg-transparent border-0">Giá cao đến thấp</button>
+                    </li>
+                    <li>
+                        <button id="price_asc" class="product-dropdown-sort product-dropdown_btn bg-transparent border-0">Giá thấp đến cao</button>
+                    </li>
+                </ul>
+
+            </div>
+        </li>
+
+    </ul>
+
+
+</div>
+<!-- for mobile -->
+<ul class="sort-product-mb text-center p-0 list-unstyled allow-scroll">
+
+    <li class="sort-product-mb_item btn btn-success" style="height: 36px;" onclick="subMenu();">
+        <span>
+            Thương hiệu
+            <i class="fa-solid fa-caret-down"></i>
+        </span>
+
+    </li>
+    <li class="sort-product-mb_item">
+        <button class="sort-product-mb_btn btn btn-success border-0 product-dropdown-sort">Mới nhất</button>
+    </li>
+
+    <li class="sort-product-mb_item">
+        <button class="sort-product-mb_btn btn btn-success border-0 product-dropdown-discount">Khuyến mại</button>
+    </li>
+
+    <li class="sort-product-mb_item">
+        <button id="price_asc" class="sort-product-mb_btn btn btn-success border-0 product-dropdown-sort">Giá thấp</button>
+    </li>
+
+    <li class="sort-product-mb_item">
+        <button id="price_desc" class="sort-product-mb_btn btn btn-success border-0 product-dropdown-sort">Giá cao</button>
+    </li>
+
+
+</ul>
+<div class="product-dropdown-mb product-dropdown">
+    @await Component.InvokeAsync("Brand")
+</div>
+<!--  -->
+
+<div class="products">
+    <h2 class="products_title fw-bold">Danh sách sản phẩm</h2>
+    <div id="list-product" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-md-3 g-lg-2 g-xl-2">
+       <Partial name="Product"/>
+    </div>
+    
+</div>
+
+<div class="page">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item previous">
+
+                <a href="#" class="page-link" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item pagniation-item">
+                    <a class="page-link" href="#">@i</a>
+                </li>
+            }
+            <li class="page-item next">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+@section Scripts{
+    <script>
+        function subMenu () {
+            $(".product-dropdown").toggleClass("d-flex")
+            $(".sort-product-mb").toggleClass("allow-scroll")
+            $(".sort-product-mb").toggleClass("no-scroll")
+        }
+
+        $(".product-dropdown-brand").click(function () {
+            var idbrand = $(this).attr('id');
+            console.log(idbrand)
+            $.ajax({
+                url: "/filterByBrand",
+                data: { idbrand: idbrand },
+                success: function (response) {
+                    $("#list-product").html(response);
+                    console.log(response)
+                },
+                error: function(err) {
+                    console.log(err)
+
+                }
+            })
+        })
+
+        $(".product-dropdown-price").click(function () {
+            var priceRange = $(this).val();
+            var [minPrice, maxPrice] = priceRange.split("-");
+            filterByPrice(parseFloat(minPrice), maxPrice ? parseFloat(maxPrice) : null);
+            
+        })
+
+        function filterByPrice(minPrice, maxPrice) {
+            $.ajax({
+                url: "/filterByPrice",
+                data: { minPrice: minPrice, maxPrice:maxPrice },
+                success: function (response) {
+                    $("#list-product").html(response);
+                }
+            })
+        }
+
+        $(".product-dropdown-discount").click(function () {
+            $.ajax({
+                url: "/filterByDiscount",
+                
+                success: function (response) {
+                    $("#list-product").html(response);
+                }
+            })
+        })
+
+        $(".product-dropdown-sort").click(function () {
+            var sortOrder = $(this).attr('id');
+            console.log(sortOrder)
+            $.ajax({
+                url: "/SortProducts",
+                data: { sortOrder: sortOrder },
+                success: function (response) {
+                    $("#list-product").html(response);
+                }
+            })
+        })
+        
+        
+        $("#search-icon").on('click', function () {
+            var searchString = $("#search-box").val();
+            if(searchString !== "") {
+                 Search(searchString)
+                 
+            }
+        });
+
+        function Search(searchString) {
+            $.ajax({
+                url: "/Search",
+              
+                data: { searchString: searchString },
+                success: function (response) {
+                    $("#list-product").html(response);
+                    
+                }
+                
+            })
+        }
+
+
+        var currPage = 1;
+        function getDataPage(currPage) {
+            $.ajax({
+                url: "/ListProduct",
+                data: { page: currPage },
+                success: function (result) {
+                    $('#list-product').html(result);
+                }
+            })
+        }
+
+        $(".pagniation-item .page-link").click(function (event) {
+            event.preventDefault();
+            currPage = $(this).text();
+            getDataPage(currPage);
+        })
+        $(".page-item.previous .page-link").click(function (event) {
+            event.preventDefault();
+            currPage--;
+            getDataPage(currPage);
+        })
+        $(".page-item.next .page-link").click(function (event) {
+            event.preventDefault();
+            currPage++;
+            getDataPage(currPage);
+        })
+
+        $("document").ready(() => {
+            getDataPage(1);
+        })
+
+    </script>
+}
+

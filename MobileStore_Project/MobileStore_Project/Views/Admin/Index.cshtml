@@ -1,0 +1,138 @@
+﻿
+@model List<MobileStore_Project.Models.SanPham>;
+@{
+    ViewBag.title = "List Product";
+    int pageCount = ViewBag.PageCount != null ? (int)ViewBag.PageCount : 1;
+
+    int startPage = 1;
+    int endPage = pageCount;
+    
+}
+@section Scripts {
+    <script>
+        let hrefDel = "";
+        const handleSearch = (e) => {
+            let key = $("#seachProductListInp").val().trim();
+            $.ajax({
+                url: "/List",
+                data: { id: key },
+                success: function (result) {
+                    $("#productListBodyTable").html(result);
+                },
+            });
+        };
+
+        $("#seachProductListInp").keypress(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                handleSearch(event);
+            }
+        });
+
+        var currPage = 1;
+        function getDataPage(currPage) {
+            if (currPage <= @ViewBag.PageCount) {
+                $.ajax({
+                    url: "/List",
+                    data: { page: currPage },
+                    success: function (result) {
+                        $('#productListBodyTable').html(result);
+                    }
+                })
+            }
+        }
+
+
+
+        $(".pagniation-item .page-link").click(function (event) {
+            event.preventDefault();
+            currPage = $(this).text();
+            getDataPage(currPage);
+        })
+        $(".page-item.previous .page-link").click(function (event) {
+            event.preventDefault();
+            currPage--;
+            getDataPage(currPage);
+        })
+        $(".page-item.next .page-link").click(function (event) {
+            event.preventDefault();
+            currPage++;
+            getDataPage(currPage);
+        })
+
+        $("document").ready(() => {
+            getDataPage(1);
+        })
+    </script>
+}
+ <main class="p-3 bg-light container">
+      <span class="d-block border-bottom pb-2 fw-bold"
+        >Danh sach san pham
+      </span>
+      <div class="d-flex flex-row py-3 justify-content-between">
+        <div class="d-flex flex-row">
+          <button class="border p-2 px-3 me-2 rounded">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <button class="border p-2 px-3 rounded me-2">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+        <div class="position-relative">
+          <input
+            type="text"
+            placeholder="Find something"
+            class="col-12 h-100 form-control form-control-sm"
+            id="seachProductListInp"
+          />
+          <button
+            class="position-absolute top-50 end-0 translate-middle-y p-2 border-0 border-end border-1"
+            onclick="handleSearch(event)"
+          >
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
+      <table class="table table-striped table-hover table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Select</th>
+            <th scope="col" class="d-none d-md-table-cell">Hinh anh</th>
+            <th scope="col">Ma san pham</th>
+            <th scope="col">Ten san pham</th>
+            <th scope="col">Nha san xuat</th>
+            <th scope="col" class="d-none d-md-table-cell">So luong</th>
+            <th scope="col " class="d-none d-md-table-cell">Ngay tao</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody id="productListBodyTable">
+            <Partial name="List" />
+            
+        </tbody>
+      </table>
+    <div class="page">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item previous">
+
+                    <a href="#" class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item pagniation-item">
+                        <a class="page-link" href="#">@i</a>
+                    </li>
+                }
+                <li class="page-item next">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+   
+    </main>
